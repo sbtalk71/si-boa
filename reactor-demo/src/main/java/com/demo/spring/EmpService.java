@@ -16,14 +16,29 @@ public class EmpService {
 
 	@Autowired
 	EmpReactiveRepository repository;
-	public Flux<Emp> listAll(){
-		return repository.findAll().delayElements(Duration.ofSeconds(2));
+
+	public Flux<Emp> listAll() {
+		return repository.findAll();// .delayElements(Duration.ofSeconds(2));
+	}
+
+	public Mono<Emp> findEmpById(int id) {
+
+		return repository.findById(id).switchIfEmpty(Mono.error(new EmpNotFoundException("Emp Not Found")));
+	}
+
+	public Mono<Void> delete(int id) {
+
+		
+		return repository.findById(id)
+				.switchIfEmpty(Mono.error(new EmpNotFoundException("Emp Not Found")))
+				.flatMap(m->repository.deleteById(id));
 	}
 	
 	
-	public Mono<Emp> findEmpById(int id){
-		
-		return repository.findById(id)
-				.switchIfEmpty(Mono.error(new EmpNotFoundException("Emp Not Found")));
+	public Mono<Emp> save(Emp emp){
+		return repository.findById(emp.getEmpId())
+				.switchIfEmpty(repository.save(emp))
+				.flatMap(e->Mono.error(new EmpExistsException("Emp Exists in DB")));
+				
 	}
 }

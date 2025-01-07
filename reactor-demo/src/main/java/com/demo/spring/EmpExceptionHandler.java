@@ -13,4 +13,9 @@ public class EmpExceptionHandler {
 	public ResponseEntity<Mono<String>> handleEx1(EmpNotFoundException ex){
 		return ResponseEntity.status(404).body(Mono.just(ex.getMessage()));
 	}
+	
+	@ExceptionHandler(EmpExistsException.class)
+	public ResponseEntity<Mono<String>> handleEx2(EmpExistsException ex){
+		return ResponseEntity.status(500).body(Mono.just(ex.getMessage()));
+	}
 }
