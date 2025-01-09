@@ -1,21 +1,13 @@
-package com.demo.spring.dao;
+package com.demo.spring;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-
-@Entity
-@Table(name="EMP")
 public class Emp {
 
-	@Id
-	@Column(name="EMPNO")
+	
 	private Integer empId;
 	
 	private String name;
 	
-	@Column(name="ADDRESS")
+	
 	private String city;
 	
 	private double salary;
@@ -63,7 +55,7 @@ public class Emp {
 	public void setSalary(double salary) {
 		this.salary = salary;
 	}
-
+	
 	@Override
 	public String toString() {
 		
