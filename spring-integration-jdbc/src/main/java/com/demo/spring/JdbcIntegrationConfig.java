@@ -15,12 +15,16 @@ import org.springframework.integration.dsl.Pollers;
 import org.springframework.integration.jdbc.JdbcMessageHandler;
 import org.springframework.integration.jdbc.JdbcPollingChannelAdapter;
 import org.springframework.messaging.MessageChannel;
+import org.springframework.transaction.TransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 
 @Configuration
 @EnableIntegration
 public class JdbcIntegrationConfig {
 
+	@Autowired
+	TransactionManager txm;
+	
 	@Autowired
 	DataSource dataSource;
 
@@ -34,7 +38,7 @@ public class JdbcIntegrationConfig {
 		return new DirectChannel();
 	}
 
-	@Transactional()
+	
 	public JdbcPollingChannelAdapter jdbcInboundAdapter() {
 		JdbcPollingChannelAdapter adapter = new JdbcPollingChannelAdapter(dataSource, "select * from EMP");
 		adapter.setRowMapper((rs, rowCount) -> {
@@ -44,10 +48,11 @@ public class JdbcIntegrationConfig {
 		return adapter;
 	}
 	
-	@Transactional
+	@Transactional(transactionManager = "txm")
 	public JdbcMessageHandler jdbcMessageHandler() {
 		String sql="insert into emp(empno, name, address, salary) values (?,?,?,?)";
 		JdbcMessageHandler handler= new JdbcMessageHandler(dataSource, sql);
+		
 		handler.setPreparedStatementSetter((ps,message)->{
 			Emp emp= (Emp)message.getPayload();
 			ps.setInt(1, emp.getEmpId());
@@ -55,6 +60,8 @@ public class JdbcIntegrationConfig {
 			ps.setString(3, emp.getCity());
 			ps.setDouble(4, emp.getSalary());
 		});
+		
+	
 		return handler;
 	}
 
