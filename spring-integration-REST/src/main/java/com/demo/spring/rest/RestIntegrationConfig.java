@@ -1,4 +1,4 @@
-package com.demo.spring;
+package com.demo.spring.rest;
 
 import java.util.HashMap;
 
