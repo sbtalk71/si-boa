@@ -25,6 +25,7 @@ public class LoanBrokerService {
 
         boolean bankVerified = restTemplate.getForObject(
             "http://localhost:8080/verifyBank?customerName=" + customerName, Boolean.class);
+       
         int creditScore = restTemplate.getForObject(
             "http://localhost:8080/getCreditScore?customerName=" + customerName, Integer.class);
 
